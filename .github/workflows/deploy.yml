@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+# Se ejecuta en cada push a master y también manualmente desde
+# la pestaña Actions del repo.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Permisos necesarios para que actions/deploy-pages pueda
+# publicar en GitHub Pages con OIDC.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita que se ejecuten dos deploys en paralelo.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Como no hay paso de build, subimos el repo entero.
+          path: '.'
+
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

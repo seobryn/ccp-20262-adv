@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Diario de Recuerdos</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Encabezado: el nombre del producto vive solo aquí para poder rebrandear fácil -->
+    <header class="encabezado">
+      <div class="encabezado__marca">
+        <span class="encabezado__logo" aria-hidden="true">✦</span>
+        <h1 class="encabezado__titulo">Mi Diario de Recuerdos</h1>
+      </div>
+      <p class="encabezado__subtitulo">
+        Guarda los momentos que te hacen sonreír
+      </p>
+      <button
+        id="boton-nuevo"
+        class="boton boton--primario boton--nuevo"
+        type="button"
+      >
+        <span aria-hidden="true">＋</span> Nuevo recuerdo
+      </button>
+    </header>
+
+    <main class="principal">
+      <!-- Lista de recuerdos guardados -->
+      <section class="seccion seccion--lista" aria-labelledby="titulo-lista">
+        <h2 id="titulo-lista" class="seccion__titulo">Mis recuerdos</h2>
+
+        <!-- Se muestra solo cuando no hay recuerdos guardados -->
+        <p id="estado-vacio" class="estado-vacio">
+          Aún no tienes recuerdos guardados. ¡Crea el primero con el botón de
+          arriba! ✨
+        </p>
+
+        <ul
+          id="lista-recuerdos"
+          class="lista-recuerdos"
+          aria-live="polite"
+        ></ul>
+      </section>
+    </main>
+
+    <!-- Aviso de error visible para la usuaria, en caso de que JS falle -->
+    <div id="error-app" class="error-app" role="alert" hidden></div>
+
+    <!-- Diálogo con el formulario para crear recuerdos nuevos -->
+    <dialog
+      id="dialogo-formulario"
+      class="dialogo"
+      aria-labelledby="dialogo-formulario-titulo"
+    >
+      <form
+        id="formulario-recuerdo"
+        class="formulario formulario--dialogo"
+        method="dialog"
+        novalidate
+      >
+        <div class="dialogo__encabezado">
+          <h2 id="dialogo-formulario-titulo" class="dialogo__titulo">
+            Nuevo recuerdo
+          </h2>
+          <button
+            type="button"
+            class="dialogo__cerrar"
+            data-cerrar-formulario
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="dialogo__cuerpo">
+          <div class="campo">
+            <label class="campo__etiqueta" for="titulo">Título</label>
+            <input
+              class="campo__entrada"
+              type="text"
+              id="titulo"
+              name="titulo"
+              maxlength="60"
+              required
+              placeholder="Ej: Mi primer día de clases"
+            />
+          </div>
+
+          <div class="campo">
+            <label class="campo__etiqueta" for="descripcion">Descripción</label>
+            <textarea
+              class="campo__entrada campo__entrada--area"
+              id="descripcion"
+              name="descripcion"
+              rows="4"
+              maxlength="500"
+              required
+              placeholder="¿Qué pasó ese día? ¿Cómo te sentiste?"
+            ></textarea>
+          </div>
+
+          <div class="campo campo--mitad">
+            <label class="campo__etiqueta" for="fecha">Fecha</label>
+            <input
+              class="campo__entrada"
+              type="date"
+              id="fecha"
+              name="fecha"
+              required
+            />
+          </div>
+
+          <div class="campo campo--mitad">
+            <label class="campo__etiqueta" for="categoria">Categoría</label>
+            <select
+              class="campo__entrada"
+              id="categoria"
+              name="categoria"
+              required
+            >
+              <option value="" disabled selected>Elige una categoría</option>
+              <option value="Familia">Familia</option>
+              <option value="Amigos">Amigos</option>
+              <option value="Escuela">Escuela</option>
+              <option value="Viajes">Viajes</option>
+              <option value="Logros">Logros</option>
+              <option value="Otros">Otros</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label class="campo__etiqueta" for="imagen"
+              >Imagen (opcional)</label
+            >
+            <input
+              class="campo__archivo"
+              type="file"
+              id="imagen"
+              name="imagen"
+              accept="image/*"
+            />
+            <p class="campo__ayuda">Tamaño máximo: 2 MB</p>
+            <img
+              id="vista-previa"
+              class="vista-previa"
+              alt="Vista previa de la imagen"
+              hidden
+            />
+          </div>
+
+          <!-- Mensaje de error visible para la usuaria, sin alert() del navegador -->
+          <p id="mensaje-error" class="mensaje-error" role="alert" hidden></p>
+        </div>
+
+        <div class="dialogo__pie">
+          <button
+            type="button"
+            class="boton boton--secundario"
+            data-cerrar-formulario
+          >
+            Cancelar
+          </button>
+          <button type="submit" class="boton boton--primario">
+            Guardar recuerdo
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Diálogo nativo del navegador para ver el detalle de un recuerdo -->
+    <dialog
+      id="dialogo-detalle"
+      class="dialogo"
+      aria-labelledby="detalle-titulo"
+    >
+      <article class="dialogo__articulo">
+        <div class="dialogo__encabezado">
+          <h2 id="detalle-titulo" class="dialogo__titulo"></h2>
+          <button
+            type="button"
+            class="dialogo__cerrar"
+            data-cerrar-detalle
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="dialogo__cuerpo">
+          <img id="detalle-imagen" class="dialogo__imagen" alt="" hidden />
+          <div class="dialogo__meta">
+            <span id="detalle-categoria" class="etiqueta-categoria"></span>
+            <p id="detalle-fecha" class="dialogo__fecha"></p>
+          </div>
+          <p id="detalle-descripcion" class="dialogo__descripcion"></p>
+        </div>
+
+        <div class="dialogo__pie">
+          <button
+            type="button"
+            id="boton-cerrar"
+            class="boton boton--secundario"
+          >
+            Cerrar
+          </button>
+        </div>
+      </article>
+    </dialog>
+
+    <footer class="pie">
+      <p>Hecho por: Mentores CCP</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
