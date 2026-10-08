@@ -168,115 +168,37 @@ function crearTarjeta(recuerdo) {
   boton.className = "tarjeta-recuerdo";
   boton.setAttribute("aria-label", `Ver recuerdo: ${recuerdo.titulo}`);
 
-  // --- Cara frontal: imagen, categoría, título y fecha ----------
-  const frente = document.createElement("div");
-  frente.className = "tarjeta-recuerdo__cara tarjeta-recuerdo__cara--frente";
-
   if (recuerdo.imagen) {
     const img = document.createElement("img");
     img.src = recuerdo.imagen;
     img.alt = recuerdo.titulo;
     img.className = "tarjeta-recuerdo__imagen";
-    frente.appendChild(img);
+    boton.appendChild(img);
   } else {
     const placeholder = document.createElement("div");
     placeholder.className = "tarjeta-recuerdo__imagen--vacia";
     placeholder.textContent = "✦";
     placeholder.setAttribute("aria-hidden", "true");
-    frente.appendChild(placeholder);
+    boton.appendChild(placeholder);
   }
 
   const etiqueta = document.createElement("span");
   etiqueta.className = "etiqueta-categoria";
   etiqueta.dataset.categoria = recuerdo.categoria;
   etiqueta.textContent = recuerdo.categoria;
-  frente.appendChild(etiqueta);
+  boton.appendChild(etiqueta);
 
   const titulo = document.createElement("h3");
   titulo.className = "tarjeta-recuerdo__titulo";
   titulo.textContent = recuerdo.titulo;
-  frente.appendChild(titulo);
+  boton.appendChild(titulo);
 
   const fecha = document.createElement("p");
   fecha.className = "tarjeta-recuerdo__fecha";
   fecha.textContent = formatearFecha(recuerdo.fecha);
-  frente.appendChild(fecha);
-
-  // --- Cara trasera: comilla, descripción, meta y CTA ----------
-  const detras = document.createElement("div");
-  detras.className = "tarjeta-recuerdo__cara tarjeta-recuerdo__cara--detras";
-
-  // El padding vive en este wrapper para que el gradiente de la
-  // cara ocupe todo el borde sin dejar ver el fondo claro.
-  const contenidoDetras = document.createElement("div");
-  contenidoDetras.className = "tarjeta-recuerdo__contenido-detras";
-
-  const comilla = document.createElement("span");
-  comilla.className = "tarjeta-recuerdo__comilla";
-  comilla.textContent = "❝";
-  comilla.setAttribute("aria-hidden", "true");
-  contenidoDetras.appendChild(comilla);
-
-  const descripcion = document.createElement("p");
-  descripcion.className = "tarjeta-recuerdo__descripcion";
-  descripcion.textContent = recuerdo.descripcion;
-  contenidoDetras.appendChild(descripcion);
-
-  const meta = document.createElement("div");
-  meta.className = "tarjeta-recuerdo__meta";
-
-  const categoriaDetras = document.createElement("span");
-  categoriaDetras.className = "etiqueta-categoria etiqueta-categoria--pequena";
-  categoriaDetras.dataset.categoria = recuerdo.categoria;
-  categoriaDetras.textContent = recuerdo.categoria;
-  meta.appendChild(categoriaDetras);
-
-  const fechaDetras = document.createElement("span");
-  fechaDetras.className = "tarjeta-recuerdo__fecha tarjeta-recuerdo__fecha--detras";
-  fechaDetras.textContent = formatearFecha(recuerdo.fecha);
-  meta.appendChild(fechaDetras);
-
-  contenidoDetras.appendChild(meta);
-
-  const cta = document.createElement("span");
-  cta.className = "tarjeta-recuerdo__cta";
-  cta.textContent = "Toca para ver más →";
-  contenidoDetras.appendChild(cta);
-
-  detras.appendChild(contenidoDetras);
-
-  boton.appendChild(frente);
-  boton.appendChild(detras);
+  boton.appendChild(fecha);
 
   boton.addEventListener("click", function () { abrirDialogoDetalle(recuerdo); });
-
-  // Brillo que sigue al cursor. Pausamos la actualización durante
-  // el flip para que la cara frontal no tiemble al rotar: mientras
-  // la tarjeta está rotando, getBoundingClientRect() devuelve un
-  // rectángulo cambiante en cada frame, y eso hacía que el brillo
-  // saltara de posición.
-  if (matchMedia("(hover: hover)").matches) {
-    let volteando = false;
-
-    boton.addEventListener("transitionrun", function (evento) {
-      if (evento.propertyName === "transform") volteando = true;
-    });
-    boton.addEventListener("transitionend", function (evento) {
-      if (evento.propertyName === "transform") volteando = false;
-    });
-    boton.addEventListener("transitioncancel", function (evento) {
-      if (evento.propertyName === "transform") volteando = false;
-    });
-
-    boton.addEventListener("mousemove", function (evento) {
-      if (volteando) return;
-      const rect = boton.getBoundingClientRect();
-      const x = (evento.clientX - rect.left) / rect.width;
-      const y = (evento.clientY - rect.top) / rect.height;
-      boton.style.setProperty("--mx", `${x * 100}%`);
-      boton.style.setProperty("--my", `${y * 100}%`);
-    });
-  }
 
   return boton;
 }

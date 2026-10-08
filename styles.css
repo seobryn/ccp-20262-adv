@@ -345,194 +345,31 @@ button { font-family: inherit; cursor: pointer; }
   display: grid;
   gap: var(--espacio-md);
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  /* perspective da la sensación de profundidad 3D a las tarjetas */
-  perspective: 1000px;
 }
 
 .tarjeta-recuerdo {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-sm);
+  padding: var(--espacio-md);
   background: var(--color-superficie-suave);
   border-radius: var(--radio-md);
+  border: 2px solid transparent;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
   font-size: inherit;
   color: inherit;
-  position: relative;
-  min-height: 320px;
-  /* will-change promueve la tarjeta a su propia capa de composición
-     y evita parpadeos durante el render 3D. */
-  will-change: transform;
-  /* preserve-3d mantiene a las dos caras en el mismo espacio 3D */
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+  transition: transform var(--transicion-normal),
+              border-color var(--transicion-normal),
               box-shadow var(--transicion-normal);
-  /* fill-mode: none para que la animación de entrada no bloquee
-     el hover cuando termina. */
-  animation: aparecer 400ms ease;
+  animation: aparecer 400ms ease both;
 }
 
 .tarjeta-recuerdo:hover {
-  transform: rotateY(180deg);
-  /* El segundo box-shadow simula el borde de 2px sin dejar
-     transparente el contorno (que mostraba el fondo claro de
-     la página). El primero es la sombra de profundidad. */
-  box-shadow: var(--sombra-fuerte), 0 0 0 2px var(--color-primario);
-}
-
-/* Las dos caras viven en la misma celda del grid. overflow: hidden
-   recorta cada cara a su propio borde redondeado. El overflow va
-   en las caras, no en la tarjeta, porque overflow: hidden en un
-   elemento 3D-transformado a veces aplana el contexto 3D. */
-.tarjeta-recuerdo__cara {
-  grid-area: 1 / 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--espacio-sm);
-  padding: var(--espacio-md);
-  border-radius: inherit;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  overflow: hidden;
-  position: relative;
-}
-
-.tarjeta-recuerdo__cara--frente {
-  /* La cara frontal hereda el fondo de la tarjeta */
-}
-
-.tarjeta-recuerdo__cara--detras {
-  /* Pre-rotamos la cara trasera 180° para que cuando la tarjeta
-     gire 180° en hover, esta quede mirando al espectador. */
-  transform: rotateY(180deg);
-  /* La cara queda como contenedor transparente. El fondo se lo
-     pasamos al wrapper interno para que el gradiente cubra
-     también el área del padding y no quede ningún borde claro. */
-  color: var(--color-superficie);
-  display: flex;
-}
-
-.tarjeta-recuerdo__contenido-detras {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  /* Tres capas de fondo: dos radiales para dar profundidad (luz
-     arriba a la derecha, sombra abajo a la izquierda) y el
-     gradiente diagonal de la marca. */
-  background:
-    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.25), transparent 55%),
-    radial-gradient(circle at 0% 100%, rgba(0, 0, 0, 0.18), transparent 55%),
-    linear-gradient(135deg, var(--color-primario), var(--color-secundario));
-  padding: var(--espacio-xl) var(--espacio-lg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: var(--espacio-sm);
-}
-
-.tarjeta-recuerdo__comilla {
-  /* Comilla decorativa grande en serif para contrastar con el
-     texto sans-serif del resto. */
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 5rem;
-  line-height: 0.5;
-  opacity: 0.45;
-  margin-bottom: var(--espacio-xs);
-}
-
-.tarjeta-recuerdo__descripcion {
-  margin: 0;
-  font-size: var(--tamaño-base);
-  line-height: 1.6;
-  font-weight: 500;
-  /* Sombra sutil para que el texto blanco se lea mejor sobre el
-     gradiente de fondo. */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  /* Limita el texto a 4 líneas con "..." al final */
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.tarjeta-recuerdo__meta {
-  display: flex;
-  align-items: center;
-  gap: var(--espacio-sm);
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 100%;
-  padding-top: var(--espacio-sm);
-  margin-top: var(--espacio-xs);
-  /* Separador visual entre la descripción y los metadatos */
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-/* Selector con mayor especificidad (cuelga de la cara trasera)
-   para ganar sobre la regla base .tarjeta-recuerdo__fecha que
-   define un color oscuro para la fecha. */
-.tarjeta-recuerdo__cara--detras .tarjeta-recuerdo__fecha--detras {
-  color: #ffffff;
-  margin: 0;
-  font-size: var(--tamaño-pequeno);
-  font-weight: 600;
-  /* Pill outlined: el borde semi-transparente separa el texto del
-     gradiente sin importar la zona donde caiga, y combina con
-     el estilo de la pill del CTA. */
-  padding: 0.2rem 0.6rem;
-  border: 1.5px solid rgba(255, 255, 255, 0.55);
-  border-radius: 999px;
-  /* Sombra de apoyo por si queda sobre una zona muy clara */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Variante más pequeña de la insignia de categoría para usar
-   dentro de la cara trasera. */
-.etiqueta-categoria--pequena {
-  font-size: 0.72rem;
-  padding: 0.2rem 0.6rem;
-  font-weight: 700;
-  /* Borde sutil para que destaque sobre el gradiente */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-.tarjeta-recuerdo__cta {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: var(--espacio-xs) var(--espacio-md);
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  border-radius: 999px;
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.1);
-  margin-top: var(--espacio-xs);
-  backdrop-filter: blur(4px);
-}
-
-/* Brillo que sigue al cursor. Ahora vive en la cara frontal: cuando
-   la tarjeta se voltea, la cara frontal queda oculta por
-   backface-visibility y el brillo desaparece con ella, sin causar
-   saltos ni temblores durante la rotación. */
-.tarjeta-recuerdo__cara--frente::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle 140px at var(--mx, 50%) var(--my, 50%),
-    rgba(192, 38, 211, 0.4),
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-}
-
-.tarjeta-recuerdo:hover .tarjeta-recuerdo__cara--frente::after {
-  opacity: 1;
+  transform: translateY(-2px);
+  border-color: var(--color-primario);
+  box-shadow: var(--sombra-fuerte);
 }
 
 @keyframes aparecer {
