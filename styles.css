@@ -176,13 +176,9 @@ button { font-family: inherit; cursor: pointer; }
   margin: 0 auto;
 }
 
-.seccion {
-  background: var(--color-superficie);
-  border-radius: var(--radio-lg);
-  padding: var(--espacio-lg);
-  box-shadow: var(--sombra-suave);
-}
-
+/* La sección es solo estructura semántica. Las cards tienen
+   su propio fondo y sombra, así que la sección no necesita
+   parecerse a una card. */
 .seccion__titulo {
   font-size: var(--tamaño-grande);
   margin-bottom: var(--espacio-lg);
