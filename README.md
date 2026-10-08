@@ -1,6 +1,6 @@
 # Mi Diario de Recuerdos
 
-Sitio web educativo para el curso **Chicas Programadoras**. Una página sencilla donde la usuaria registra recuerdos con título, descripción, fecha, categoría e imagen, y los ve dentro de un diálogo emergente. Todo se guarda en el navegador, sin servidor ni base de datos.
+Sitio web educativo para el curso **Chicas Programadoras**. Una página sencilla donde la usuaria registra recuerdos con título, descripción, fecha, categoría e imagen, y los ve en un feed vertical en la misma pantalla. Todo se guarda en el navegador, sin servidor ni base de datos.
 
 ## Requisitos
 
@@ -40,8 +40,8 @@ Levantar un pequeño servidor web evita los errores de CORS que algunos navegado
 Después de abrir la página, recorre esta lista para asegurarte de que el comportamiento es el correcto:
 
 - [ ] Presionar el botón **+ Nuevo recuerdo** del encabezado → se abre un diálogo modal con el formulario, con un fondo oscuro detrás.
-- [ ] Completar el formulario con todos los campos y presionar **Guardar recuerdo** → el diálogo se cierra y el recuerdo aparece en el feed de la página, con imagen, categoría, fecha, título y descripción.
-- [ ] Presionar **Cancelar**, la **X** del encabezado del diálogo, la tecla **Esc**, o hacer click fuera del diálogo → el diálogo se cierra y el foco vuelve al botón "Nuevo recuerdo".
+- [ ] Completar el formulario con todos los campos y presionar **Guardar** → el diálogo se cierra y el recuerdo aparece en el feed de la página, con imagen, categoría, fecha, título y descripción.
+- [ ] Presionar **Cancelar**, la **X** del encabezado del diálogo, la tecla **Esc**, o hacer click fuera del diálogo → el diálogo se cierra.
 - [ ] Recargar la página (`F5` o `Ctrl+R` / `Cmd+R`) → los recuerdos siguen ahí, porque se guardan en `localStorage`.
 - [ ] Intentar subir una imagen mayor a 2 MB → aparece un mensaje de error en rojo y la imagen no se acepta.
 - [ ] Recorrer toda la página solo con el teclado (`Tab` y `Enter`) → el foco se ve siempre con un contorno azul visible.
@@ -51,20 +51,19 @@ Después de abrir la página, recorre esta lista para asegurarte de que el compo
 
 ```
 .
-├── AGENTS.md      ← reglas y convenciones para quien programa sobre el proyecto
-├── README.md      ← este archivo
-├── index.html     ← estructura semántica de la página
-├── styles.css     ← colores, tipografía y diseño (con marca blanca en :root)
-└── script.js      ← lógica: formulario, almacenamiento y diálogo
+├── .github/workflows/deploy.yml   ← pipeline de GitHub Actions para Pages
+├── AGENTS.md                      ← reglas y convenciones del proyecto
+├── README.md                      ← este archivo
+├── index.html                     ← estructura semántica de la página
+├── styles.css                     ← colores y diseño (marca blanca en :root)
+└── script.js                      ← formulario, feed y persistencia
 ```
+
+564 líneas en total entre los tres archivos del proyecto, sin dependencias externas.
 
 ## Personalizar la marca (white-label)
 
 Todos los colores del sitio viven en un solo lugar: el bloque `:root` al inicio de `styles.css`. Para rebrandear (por ejemplo, pasar de violeta a turquesa, o cambiar las tipografías), edita únicamente esos valores y todo el sitio se reestiliza automáticamente, sin tocar nada más.
-
-## Más información
-
-Las convenciones de código, las restricciones del proyecto y la lista completa de lo que **no** se debe hacer están en [`AGENTS.md`](./AGENTS.md).
 
 ## Desplegar en GitHub Pages
 
@@ -79,3 +78,7 @@ Para activarlo por primera vez:
 5. La página queda disponible en `https://<usuario>.github.io/<repo>/`.
 
 Los despliegues siguientes son automáticos: cada `git push` a `master` redeploya.
+
+## Más información
+
+Las convenciones de código, las restricciones del proyecto y la lista completa de lo que **no** se debe hacer están en [`AGENTS.md`](./AGENTS.md).
