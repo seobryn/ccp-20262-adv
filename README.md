@@ -40,9 +40,8 @@ Levantar un pequeño servidor web evita los errores de CORS que algunos navegado
 Después de abrir la página, recorre esta lista para asegurarte de que el comportamiento es el correcto:
 
 - [ ] Presionar el botón **+ Nuevo recuerdo** del encabezado → se abre un diálogo modal con el formulario, con un fondo oscuro detrás.
-- [ ] Completar el formulario con todos los campos y presionar **Guardar recuerdo** → el diálogo se cierra y la tarjeta aparece en la lista.
+- [ ] Completar el formulario con todos los campos y presionar **Guardar recuerdo** → el diálogo se cierra y el recuerdo aparece en el feed de la página, con imagen, categoría, fecha, título y descripción.
 - [ ] Presionar **Cancelar**, la **X** del encabezado del diálogo, la tecla **Esc**, o hacer click fuera del diálogo → el diálogo se cierra y el foco vuelve al botón "Nuevo recuerdo".
-- [ ] Hacer click sobre una tarjeta → se abre el diálogo de detalle con toda la información del recuerdo, incluida la imagen.
 - [ ] Recargar la página (`F5` o `Ctrl+R` / `Cmd+R`) → los recuerdos siguen ahí, porque se guardan en `localStorage`.
 - [ ] Intentar subir una imagen mayor a 2 MB → aparece un mensaje de error en rojo y la imagen no se acepta.
 - [ ] Recorrer toda la página solo con el teclado (`Tab` y `Enter`) → el foco se ve siempre con un contorno azul visible.

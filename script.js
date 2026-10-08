@@ -39,8 +39,6 @@ const mensajeError = document.getElementById("mensaje-error");
 const listaRecuerdos = document.getElementById("lista-recuerdos");
 const estadoVacio = document.getElementById("estado-vacio");
 const dialogoFormulario = document.getElementById("dialogo-formulario");
-const dialogo = document.getElementById("dialogo-detalle");
-const botonCerrar = document.getElementById("boton-cerrar");
 
 // --- Almacenamiento en localStorage ----------------------------
 // localStorage guarda texto en el navegador de la usuaria. Como
@@ -163,44 +161,55 @@ function formatearFecha(fechaISO) {
 }
 
 function crearTarjeta(recuerdo) {
-  const boton = document.createElement("button");
-  boton.type = "button";
-  boton.className = "tarjeta-recuerdo";
-  boton.setAttribute("aria-label", `Ver recuerdo: ${recuerdo.titulo}`);
+  const articulo = document.createElement("article");
+  articulo.className = "tarjeta-recuerdo";
 
   if (recuerdo.imagen) {
     const img = document.createElement("img");
     img.src = recuerdo.imagen;
     img.alt = recuerdo.titulo;
     img.className = "tarjeta-recuerdo__imagen";
-    boton.appendChild(img);
+    articulo.appendChild(img);
   } else {
     const placeholder = document.createElement("div");
     placeholder.className = "tarjeta-recuerdo__imagen--vacia";
     placeholder.textContent = "✦";
     placeholder.setAttribute("aria-hidden", "true");
-    boton.appendChild(placeholder);
+    articulo.appendChild(placeholder);
   }
+
+  const contenido = document.createElement("div");
+  contenido.className = "tarjeta-recuerdo__contenido";
+
+  const meta = document.createElement("div");
+  meta.className = "tarjeta-recuerdo__meta";
 
   const etiqueta = document.createElement("span");
   etiqueta.className = "etiqueta-categoria";
   etiqueta.dataset.categoria = recuerdo.categoria;
   etiqueta.textContent = recuerdo.categoria;
-  boton.appendChild(etiqueta);
+  meta.appendChild(etiqueta);
+
+  const fecha = document.createElement("span");
+  fecha.className = "tarjeta-recuerdo__fecha";
+  fecha.textContent = formatearFecha(recuerdo.fecha);
+  meta.appendChild(fecha);
+
+  contenido.appendChild(meta);
 
   const titulo = document.createElement("h3");
   titulo.className = "tarjeta-recuerdo__titulo";
   titulo.textContent = recuerdo.titulo;
-  boton.appendChild(titulo);
+  contenido.appendChild(titulo);
 
-  const fecha = document.createElement("p");
-  fecha.className = "tarjeta-recuerdo__fecha";
-  fecha.textContent = formatearFecha(recuerdo.fecha);
-  boton.appendChild(fecha);
+  const descripcion = document.createElement("p");
+  descripcion.className = "tarjeta-recuerdo__descripcion";
+  descripcion.textContent = recuerdo.descripcion;
+  contenido.appendChild(descripcion);
 
-  boton.addEventListener("click", function () { abrirDialogoDetalle(recuerdo); });
+  articulo.appendChild(contenido);
 
-  return boton;
+  return articulo;
 }
 
 function renderizarLista() {
@@ -223,7 +232,7 @@ function renderizarLista() {
     });
 }
 
-// --- Diálogos --------------------------------------------------
+// --- Diálogo del formulario -------------------------------------
 // <dialog> es un elemento HTML nativo que ya maneja el cierre
 // con Escape, el foco inicial y la accesibilidad por nosotros.
 // showModal() además aplica el backdrop automáticamente.
@@ -234,30 +243,6 @@ function abrirDialogoFormulario() {
   // Llevamos el foco al primer input del formulario para que la
   // usuaria pueda empezar a escribir de inmediato.
   entradaTitulo.focus();
-}
-
-function abrirDialogoDetalle(recuerdo) {
-  elementoPrevioAlDialogo = document.activeElement;
-
-  const imagen = document.getElementById("detalle-imagen");
-  if (recuerdo.imagen) {
-    imagen.src = recuerdo.imagen;
-    imagen.alt = recuerdo.titulo;
-    imagen.hidden = false;
-  } else {
-    imagen.removeAttribute("src");
-    imagen.hidden = true;
-  }
-
-  const categoria = document.getElementById("detalle-categoria");
-  categoria.dataset.categoria = recuerdo.categoria;
-  categoria.textContent = recuerdo.categoria;
-
-  document.getElementById("detalle-titulo").textContent = recuerdo.titulo;
-  document.getElementById("detalle-fecha").textContent = formatearFecha(recuerdo.fecha);
-  document.getElementById("detalle-descripcion").textContent = recuerdo.descripcion;
-
-  dialogo.showModal();
 }
 
 // Cuando el diálogo del formulario se cierra (por cualquier vía:
@@ -342,17 +327,6 @@ function iniciar() {
     limpiarFormulario();
     restaurarFoco();
   });
-
-  // Cerrar el diálogo de detalle: el botón X, el botón Cerrar del
-  // pie y cualquier click en el backdrop.
-  document.querySelectorAll("[data-cerrar-detalle]").forEach(function (boton) {
-    boton.addEventListener("click", function () { dialogo.close(); });
-  });
-  botonCerrar.addEventListener("click", function () { dialogo.close(); });
-  dialogo.addEventListener("click", function (evento) {
-    if (evento.target === dialogo) dialogo.close();
-  });
-  dialogo.addEventListener("close", restaurarFoco);
 }
 
 // --- Red de seguridad ------------------------------------------
