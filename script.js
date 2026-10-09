@@ -100,6 +100,19 @@ function leerImagen(archivo) {
   });
 }
 
+function descargarRecuerdos(e) {
+  e.preventDefault();
+  const blob = new Blob([JSON.stringify(recuerdos, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "mis-recuerdos.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById("boton-descargar").addEventListener("click", descargarRecuerdos);
+
 botonNuevo.addEventListener("click", () => {
   dialogo.showModal();
   formulario.elements.titulo.focus();

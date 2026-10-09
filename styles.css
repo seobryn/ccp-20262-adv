@@ -330,3 +330,12 @@ body > footer {
   color: var(--texto-suave);
   font-size: 0.85rem;
 }
+
+body > footer a {
+  color: var(--primario);
+  text-decoration: none;
+}
+
+body > footer a:hover {
+  text-decoration: underline;
+}
